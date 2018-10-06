@@ -1,0 +1,13 @@
+.order-container {
+  display: flex;
+  width: 100;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.order-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 5px;
+}

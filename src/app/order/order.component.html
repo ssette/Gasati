@@ -1,0 +1,98 @@
+<div class="w3-card-4">
+  <header class="w3-container w3-indigo">
+    <h3>Modifica o inserisci un nuovo ordine</h3>
+  </header>
+
+  <form class="w3-container" [formGroup]="emailForm">
+    <p>Inserisci qui sotto la tua email</p>
+    <mat-form-field style="width: 90%">
+      <input
+        matInput
+        type="text"
+        formControlName="email"
+        id="email"
+        (input)="this.emailChecked=false"
+        placeholder="Email"
+        required>
+        <mat-icon matPrefix>email_outline</mat-icon>
+    </mat-form-field>
+    <p *ngIf="checkError" class="w3-red" >Email {{email.value}} non presente</p>
+
+    <div *ngIf="emailChecked" class="w3-card-2">
+      <header class="w3-container w3-red">
+
+            <h4>Bentrovato/a  <span style="font-weight: bold;">{{customer?.cust_name}}</span>
+                <span class="w3-right"><mat-icon>home</mat-icon></span></h4>
+      </header>
+
+      <div *ngIf="!orderExists" class="w3-container">
+        <p>Stai immettendo un nuovo ordine</p>
+      </div>
+      <div *ngIf="orderExists" class="w3-container">
+        <p>Stai modificando l'ordine nr {{order?.ord_id}} del {{order?.ord_date}}</p>
+        <p *ngIf="orderWasModified"><span class="w3-small">Ordine modificato il {{order?.ord_last_modified}}</span></p>
+      </div>
+    </div>
+
+    <br>
+    <button mat-raised-button
+            color="primary"
+            style="width: 100%"
+            (click)="checkCustomer()"
+            [disabled]="!email.valid"
+            *ngIf="!emailChecked">Verifica Email
+      <mat-icon>check_circle_outline</mat-icon>
+  </button>
+</form>
+
+<br>
+
+<form  *ngIf="emailChecked" #listForm=ngForm>
+  <div class="w3-container">
+      <button mat-raised-button
+      color="primary"
+      style="width: 100%"
+      (click)="saveOrder()"
+      [disabled]="!emailChecked || (!listForm.dirty) || (!listForm.valid)">
+      Salva ordine
+        <mat-icon>add_shopping_cart</mat-icon>
+      </button>
+  </div>
+
+  <div *ngIf="empty_order" class="w3-container w3-red">
+    <p>L'ordine è vuoto, prima di salvarlo scegliere almeno un prodotto <span><mat-icon class="w3-right">cancel</mat-icon></span></p>
+  </div>
+
+  <div *ngFor="let p of order_list" class="order-container">
+  <div class="order-row" >
+    <div style="flex:8;">
+        <span >{{p.prod_description}}</span><br>
+        <span class="w3-small">Prezzo <span class="w3-small w3-indigo">{{p.prod_price}}</span> euro a confezione</span>
+      </div>
+      <div style="flex: 2;align-self: flex-end;display: flex; flex-direction: row; align-items: center; justify-content: center;">
+        <mat-form-field style="width: 30px;">
+            <input
+              #Qty
+              matInput
+              style="text-align: center;"
+              type="number"
+              required
+              min="0"
+              max="99"
+              onclick="this.select();"
+              (change)="empty_order=false;"
+              name="oitm_quantity-{{p.prod_id}}"
+              id="oitm_quantity-{{p.prod_id}}"
+              [(ngModel)]="p.oitm_quantity">
+            <mat-hint>Quantità</mat-hint>
+        </mat-form-field>
+        <button mat-button_icon style="float: right; margin-left: 2px;" (click)="Qty.value = 0;">
+            <mat-icon>remove_shopping_cart</mat-icon>
+        </button>
+
+      </div>
+  </div>
+  <hr>
+</div>
+</form>
+
